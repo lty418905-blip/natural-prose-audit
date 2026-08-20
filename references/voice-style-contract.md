@@ -44,6 +44,12 @@ voice_style:
       source_language: ""             # 便于区分原文、译文与未知来源
       translation_status: "ORIGINAL | TRANSLATED | UNKNOWN"
       adoption_status: "REFERENCE_ONLY | SELECTED | REJECTED | UNKNOWN"
+  PROCESS_GUARDS:
+    explanation_policy: "ALLOW_WHEN_CAUSALITY_REQUIRES / REVIEW_REPEATED_TAILS"
+    dialogue_completion_policy: "ALLOW_PARTIAL_EVASIVE_INTERRUPTED_RESPONSES"
+    seam_policy: "CONTINUE_WITHOUT_RESET_OR_RECAP"
+    cross_character_voice_protection: []
+    detector_material_in_generation_prompt: false
   PRIORITY_ORDER:
     - FACTS_AND_USER_CONSTRAINTS
     - VIEWPOINT_AND_PSYCHOLOGY_BOUNDARY
@@ -60,7 +66,8 @@ voice_style:
 1. 先填 `PRIMARY_MODE`、`DOMINANT_LAYER`、`GENRE_BASELINE` 与 `WEB_NARRATIVE_PROFILE`。网文层负责读者契约、场景推进、信息释放、对白功能、局部回报和结尾牵引；非连载任务标为 `NOT_APPLICABLE`，不得自行补一个连载钩子。现实文学取向可以作为基线的一部分，但不能用抽象“高级感”替代场景任务。
 2. 再填 `LITERARY_MODULATION`。叙述距离、情绪显露度、句法舒展度、意象密度、对白显露或回避、沉默与省略，都必须有 `scope_window` 和 `function`，且默认最多启用一个调制组。整篇不需要时写 `status: NONE`，不得为了显得有风格而全篇套用。
 3. 以 `SOURCE_BINDINGS` 记录实际参考资料的位置、SHA、定位、语言/译本状态和采用状态。若没有可核验文件，写 `UNKNOWN` 或 `REFERENCE_ONLY`，不得凭记忆补精确内容。
-4. 最终按 `PRIORITY_ORDER` 决策。调制导致事实、因果、视角、人物知识、关系阶段、格式或可读性受损时，调用 `RETURN_INTERFACE.fallback` 并记录 `unresolved`。
+4. `PROCESS_GUARDS`只保护叙述程序，不规定频率。必要因果解释可以保留；对话可以完整回答，也可以由人物任务自然地产生偏题、搁置或打断；分段续接不得重开场或复述前文。任何检测器百分比、阈值、命中词表或规避假说都不得进入生成提示。
+5. 最终按 `PRIORITY_ORDER` 决策。调制导致事实、因果、视角、人物知识、关系阶段、格式或可读性受损时，调用 `RETURN_INTERFACE.fallback` 并记录 `unresolved`。
 
 ## 禁止误用
 
