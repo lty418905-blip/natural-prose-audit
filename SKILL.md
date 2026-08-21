@@ -1,20 +1,21 @@
 ---
 name: natural-prose-audit
-description: Audit, revise, or create Chinese fiction and nonfiction with a human-readable voice while preserving facts, causality, viewpoint, and user constraints. Supports audit-only work, bounded revision, and a same-agent two-draft workflow; never claims detector evasion.
+description: Audit, revise, or create Chinese fiction and nonfiction with a human-readable voice while preserving facts, causality, viewpoint, and user constraints. Uses a single-agent structured-input workflow, with optional two-draft revision and life-event chain support; never claims detector evasion.
 ---
 
 # Natural Prose Audit
 
-这是一个通用的中文写作与审计 Skill。它可以只审计已有稿件、做有界改稿，也可以在同一个活动 agent 内依次完成“冻结约束 → 第一稿 → 结构化自审 → 第二份完整成稿 → 最终核验”。第二稿不是补丁，而是可以独立交付的完整替代稿。
+这是一个通用的中文写作与审计 Skill。它可以只审计已有稿件、做有界改稿，也可以在同一个活动 agent 内先生成结构化写作输入，再重新读取该输入完成一次完整成稿。需要时可显式开启双稿流程，但通用版不要求固定字数，也不默认生成第二稿。
 
 ## 先选模式
 
 - **AUDIT_ONLY**：只报告自然度、结构和保真问题，不改正文。
 - **BOUNDED_REVISION**：冻结事实、因果、视角和用户要求后，做一次可解释的局部修改。
+- **SINGLE_AGENT_STRUCTURED_DRAFT**：先生成 [references/structured-input-template.md](references/structured-input-template.md) 对应的结构化输入，完成自检后由同一 agent 重新读取它，再生成一份完整文章；不设通用字数门，也不自动生成第二稿。
 - **SINGLE_AGENT_TWO_DRAFT**：用户需要先写一稿、再根据闪光点与失败点重写一稿时，读取 [references/two-draft-workflow.md](references/two-draft-workflow.md) 及其结构化模板。
 - **EXPLAIN**：用户只问自然度、模型化形状或本 Skill 的边界时，只给方法说明，不虚构检测结论。
 
-若用户没有指定模式，根据交付目标选择；不要因为普通写作自动开启第二稿。无论哪种模式，都不创建子智能体，不把本 Skill 变成外部模型调用器，也不把审计代理当作真实检测器。
+若用户没有指定模式，创作／续写默认选择 `SINGLE_AGENT_STRUCTURED_DRAFT`；只有用户明确要求第二稿时才选择 `SINGLE_AGENT_TWO_DRAFT`。无论哪种模式，都不创建子智能体，不把本 Skill 变成外部模型调用器，也不把审计代理当作真实检测器。
 
 ## 共享不变量
 
@@ -24,6 +25,18 @@ description: Audit, revise, or create Chinese fiction and nonfiction with a huma
 4. 初稿或原稿完整读完后，才读 [references/human-revision.md](references/human-revision.md) 做细审；不要用审稿表预先把声音磨平。
 5. `VOICE_STYLE`只记录可复用的中性参数；完整字段见 [references/voice-style-contract.md](references/voice-style-contract.md)。主导体裁／叙事引擎、具体容器、转折位置、退出牵引和幽默许可负责推进，叙述距离、情绪显露度、句法舒展或压缩、意象密度、对白显露或回避、留白等只作局部调制。文学调制不是比例配额、仿写指令或作者姓名替代品，不能覆盖事实、结构、人物视角或用户约束。
 6. 改稿触及事件、选择、场景顺序、因果、人物知识、关系、时间地点、专业语义、证据强度或结尾功能时，停止自然度清理，回到用户确认或事实／结构审查。
+7. 单 agent 不得把自己的两个阅读阶段伪称为独立审查。需要“双视角”时，先完成结构覆盖清单，再重新读取正文，按 [references/self-audit-checklist.md](references/self-audit-checklist.md) 完成叙事闭合清单，并明确标记 `SELF_AUDIT_ONLY`。
+
+## 单 agent 结构化成稿
+
+当用户要求创作、续写或重写，但没有要求双稿时，优先使用 `SINGLE_AGENT_STRUCTURED_DRAFT`：
+
+1. 先完整读取已授权材料，生成 `WRITING_INPUT`，至少记录任务、读者、文体、事实／来源、视角、人物目标、场景链、未知项、禁止推断、声音参数、事件库调用范围和输出格式。
+2. 对 `WRITING_INPUT` 做一次完整性检查；缺失字段写 `UNKNOWN` 或 `NOT_APPLICABLE`，不得用记忆补齐。
+3. 暂停读取原始材料，重新读取刚生成的 `WRITING_INPUT`，只按该输入生成一份完整文章；不要输出提纲代替文章，不要输出“其余同上”。
+4. 生成后按 [references/self-audit-checklist.md](references/self-audit-checklist.md) 做一次 `SELF_AUDIT_ONLY`，只修复确有文学或保真理由的问题；不设固定字数要求。
+
+`WRITING_INPUT` 的推荐字段见 [references/structured-input-template.md](references/structured-input-template.md)。如果用户明确要求第二稿，才切换到 `SINGLE_AGENT_TWO_DRAFT`；双稿模式的输入模板和最终核验仍见 [references/two-draft-workflow.md](references/two-draft-workflow.md)。
 
 ## 审计与改稿
 
@@ -39,6 +52,16 @@ python scripts/audit_prose.py <稿件路径> --mode fiction
 ```
 
 `check_human_writing.py` 是偏严格的既有 house-style 检查；用户没有要求该风格时，把它当作可解释提醒，不把所有命中都当成通用文学禁令。`audit_prose.py` 是非阻断形状提醒。两者都不能替代完整阅读。
+
+公开版的机械放行门是严格的：凡采用机械检查器的工作，最终 `MECHANICAL_FINDINGS` 必须为 0；任何未处置命中、`REVIEW_FLAG` 或不确定命中都不能标记为放行。审计报告模式可以如实交付非零结果，但必须明确 `NOT_RELEASED`，不能把非零结果包装成通过。该零命中门只约束机械检查结果，不要求抹平合理的人物差异、生活留白或外部检测器的未知分数。
+
+如用户提供外部 AIGC／自然度报告，先记录其提交剖面、分段方式、字符口径、阈值和运行方差，再把报告当作外部证据。不得从单一报告推断普适检测机制，不得把分数下降写成“人类化成功”，也不得通过标题、空行、标点噪声、错别字或固定句长配额制造假象。
+
+## 生活化事件库
+
+生活事件不是随机插曲，而是可检索、可撤回、可追踪的叙事材料。需要时按 [references/life-event-library.md](references/life-event-library.md) 建立或读取事件库，使用 `scripts/validate_life_event_chain.py` 校验调用链。事件库调用至少要留下：候选来源、筛选理由、采用状态、可见步骤、打断／中止点、`state_out`、后效残留和禁止结果。
+
+事件链默认把一个 root event 的连续 2—6 个可见步骤计为一个事件单元；自主事件数量上限是可配置的项目参数，缺省建议为 5，不是普遍硬门。模型只能构筑已选 root event，不能从整库自行抽取第二个事件；装配后必须复盘实际步骤与后效，状态可为 `ADOPTED`、`REJECTED_OR_MERGED`、`REVIEW_FLAG` 或 `NOT_USED`。
 
 ## 交付边界
 

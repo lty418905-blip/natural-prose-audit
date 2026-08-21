@@ -1,0 +1,55 @@
+{
+  "schema": "LIFE_EVENT_CARD_V1",
+  "event_id": "event.example.001",
+  "status": "DRAFT",
+  "root_event": "",
+  "source_bindings": [
+    {
+      "source_id": "INLINE_CANDIDATE",
+      "locator": "",
+      "sha256": "",
+      "authorization": ""
+    }
+  ],
+  "eligibility": {
+    "characters": [],
+    "locations": [],
+    "time_window": "",
+    "knowledge_boundary": []
+  },
+  "narrative_function": "",
+  "chain_steps": [
+    {
+      "step_id": "s1",
+      "actor": "",
+      "target": "",
+      "action": "",
+      "state_in": "",
+      "state_out": "",
+      "residue": "",
+      "residue_changes_next_action": true,
+      "next_action_link": ""
+    },
+    {
+      "step_id": "s2",
+      "actor": "",
+      "target": "",
+      "action": "",
+      "state_in": "",
+      "state_out": "",
+      "residue": "",
+      "residue_changes_next_action": true,
+      "next_action_link": ""
+    }
+  ],
+  "abort_point": "",
+  "risk_limits": [],
+  "forbidden_outcomes": [],
+  "selection_reason": "",
+  "postcheck": {
+    "actual_steps": [],
+    "actual_state_out": "",
+    "actual_residue": "",
+    "result": "PENDING"
+  }
+}

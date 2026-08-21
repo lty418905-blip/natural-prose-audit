@@ -1,4 +1,4 @@
 interface:
   display_name: "中文自然写作与审计"
-  short_description: "创建、审计或有界改写中文正文；可选同一 agent 双稿重写"
-  default_prompt: "Use $natural-prose-audit to audit or write this Chinese text while preserving facts, causality, viewpoint, and voice; use the two-draft workflow only when requested."
+  short_description: "结构化输入后单 agent 成稿、审计或有界改写中文正文；可选双稿与生活事件链"
+  default_prompt: "Use $natural-prose-audit to create a structured writing input, reread it, then write or audit this Chinese text while preserving facts, causality, viewpoint, and voice; use two drafts only when requested."

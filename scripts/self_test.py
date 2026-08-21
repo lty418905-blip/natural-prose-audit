@@ -90,6 +90,33 @@ def main() -> int:
             raise SystemExit(
                 f"project-specific marker in generic file {relative}: {found_markers}"
             )
+    structured = (skill_root / "references/structured-input-template.md").read_text(encoding="utf-8")
+    checklist = (skill_root / "references/self-audit-checklist.md").read_text(encoding="utf-8")
+    events = (skill_root / "references/life-event-library.md").read_text(encoding="utf-8")
+    template = (skill_root / "assets/life-event-card.template.json").read_text(encoding="utf-8")
+    for label, content, required in (
+        ("structured-input-template.md", structured, ("NATURAL_PROSE_STRUCTURED_INPUT_V1", "WRITING_INPUT", "life_event_call")),
+        ("self-audit-checklist.md", checklist, ("SELF_AUDIT_ONLY", "Pass A", "Pass B", "MECHANICAL_FINDINGS")),
+        ("life-event-library.md", events, ("Call chain", "state_out", "REJECTED_OR_MERGED", "2—6")),
+        ("life-event-card.template.json", template, ("LIFE_EVENT_CARD_V1", "chain_steps", "forbidden_outcomes")),
+    ):
+        missing = [needle for needle in required if needle not in content]
+        if missing:
+            raise SystemExit(f"missing contract fields in {label}: {missing}")
+        found_markers = [marker for marker in project_markers if marker in content]
+        if found_markers:
+            raise SystemExit(f"project-specific marker in generic file {label}: {found_markers}")
+    validator = skill_root / "scripts/validate_life_event_chain.py"
+    validator_run = subprocess.run(
+        [sys.executable, str(validator), "--self-test"],
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        env=child_env,
+    )
+    if "SELF_TEST=PASS" not in validator_run.stdout:
+        raise SystemExit("life-event validator self-test did not pass")
     print("SELF_TEST=PASS")
     print("GENERIC_CONTRACT=PASS")
     return 0
