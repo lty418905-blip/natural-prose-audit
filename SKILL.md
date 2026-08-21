@@ -17,6 +17,8 @@ description: Audit, revise, or create Chinese fiction and nonfiction with a huma
 
 若用户没有指定模式，创作／续写默认选择 `SINGLE_AGENT_STRUCTURED_DRAFT`；只有用户明确要求第二稿时才选择 `SINGLE_AGENT_TWO_DRAFT`。无论哪种模式，都不创建子智能体，不把本 Skill 变成外部模型调用器，也不把审计代理当作真实检测器。
 
+需要兼容旧版 `human-writing` 目录式调用时，可读取 `references/human-writing/` 下的同等通用参考副本；根目录参考文件是当前规范入口。
+
 ## 共享不变量
 
 1. 先分清作品是现实、虚构还是混合。现实材料的事实、数字、引语、身份和来源不能臆造；虚构可以创造，但要守住人物知道什么、时间、空间、因果和设定规则。
@@ -63,8 +65,39 @@ python scripts/audit_prose.py <稿件路径> --mode fiction
 
 事件链默认把一个 root event 的连续 2—6 个可见步骤计为一个事件单元；自主事件数量上限是可配置的项目参数，缺省建议为 5，不是普遍硬门。模型只能构筑已选 root event，不能从整库自行抽取第二个事件；装配后必须复盘实际步骤与后效，状态可为 `ADOPTED`、`REJECTED_OR_MERGED`、`REVIEW_FLAG` 或 `NOT_USED`。
 
+需要更细的事件链、场景 profile 或跨文本机制重复检查时，读取嵌套的 [scene-event-weaver/SKILL.md](scene-event-weaver/SKILL.md)。它与本 Skill 共用事件卡，但不会授予新增事实或主要剧情结果的权限。
+
 ## 交付边界
 
 用户只要成稿时只交成稿；用户要求审计时再交定位、功能、处置和保留理由。第一稿、详细自审卡和第二份提示词默认留在内部，除非用户要求查看。无论交付哪一稿，都不得声称“通过朱雀”、保证绕过检测器或给出没有真实依据的概率。
 
 需要了解来源、许可或与其他公开项目的关系时，读取 [references/source-notes.md](references/source-notes.md)。
+
+## 增强审计模块
+
+按任务需要渐进读取以下通用模块；它们不依赖特定项目、审查线程、调用器、角色或内部路径：
+
+- 认知结构与场景级审计：`references/cognitive-structure.md`、`references/scene-level-audit.md`。
+- 多段章节接缝：`references/split-chapter-seam.md`。
+- AIGC 证据、反向效应与机制探针：`references/ai-trace-audit.md`、`references/detector-evidence-and-reverse-effect.md`、`references/detector-mechanism-probes.md`。
+- 句式有界改写：`references/syntax-bounded-rephrase.md`。只允许连续窗口内的语义等价调整，不使用句长或标点配额。
+- Unicode Layer A：`references/unicode-layer-a.md`。只在语义冻结后清理高置信不可见控制字符，不声称降低检测率。
+- 网文／现实文学局部调制与蒸馏方法：`references/aigc-literary-dual-objective.md`、`references/method-layer-distilled-novel-toolbox.md`、`references/distilled-novel-toolbox-writing-methods.md`。来源只提供可迁移方法，不提供事实、仿写指令或作者身份。
+
+### 机械命中处置
+
+公开版的机械检查器采用严格零命中放行：最终 `MECHANICAL_FINDINGS` 必须为 `0`。任何 `REVIEW_FLAG`、未知命中或未完成处置都只能交付为 `NOT_RELEASED`。在单 agent 模式下，先为每个 finding 建立 `finding_id`、证据位置、功能判断、处置动作和复跑结果；不得以“只是提醒”跳过。
+
+机械命中不等于必须牺牲文学性。若命中涉及事实、因果、人物声音或专业准确性，先保护这些不变量；只有在语义等价、结构不增量且有独立文学或可比检测理由时才做有界改写。无法安全修改时，公开版只能停在 `NOT_RELEASED`，不得自造豁免、审查线程或外部签名通道。
+
+### 生活事件调用链
+
+事件库按 `Inventory -> Filter -> Select -> Seed -> Assemble -> Postcheck -> Disposition` 执行。一个 root event 的 2—6 个可见步骤计为一个单元；调用必须记录来源、筛选理由、状态变化、中止点、后效残留和禁止结果。模型只能构筑已选事件，不得从整库自行抽取第二个事件；跨文本重复只作 `REVIEW_FLAG`，由人工判断是否为必要母题。
+
+### AIGC 机制证据边界
+
+先盲态冷读，再读取分数、红色片段或报告定位；固定提交剖面并分别记录源稿与实际提交文本的 SHA、字节、字符、段落和归一化。P0—P2 只用于确认运行方差、解析和分段因素；P4 才可能在独立文学理由成立时进入 `BOUNDED_REVISION`；P5 不得进入生产。分数变化只能登记为 `AIGC_COMPATIBILITY_SIGNAL`，不能写成作者身份或普适检测结论。
+
+### 结构化输入与双稿
+
+创作模式先生成 `WRITING_INPUT`，完成字段自检后停止读取原始材料，再重新读取该输入生成完整稿件。用户明确要求双稿时，第一稿完成后只做一次结构化自审，分别记录 `KEEP_FUNCTIONS`、`REQUIRED_REPAIRS`、`AIGC_COMPATIBILITY_TARGETS`、`REGRESSION_GUARDS` 和 `UNRESOLVED`，再生成完整第二稿；不自动生成第三稿。

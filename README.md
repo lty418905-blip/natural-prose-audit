@@ -7,6 +7,10 @@
 - 单 agent 先生成 `WRITING_INPUT`，再重新读取模板完成一次完整成稿。
 - 可选的同一 agent 双稿流程：第一稿、自审、第二份完整成稿、最终核验。
 - 结构覆盖与叙事闭合的两阶段自审清单，不伪装成独立子 agent 证据。
+- 认知结构、场景级审计、章节接缝和语义等价句式有界改写。
+- AIGC 机制探针、提交剖面核验、分段边界检查、报告聚合复算和透明影子评分器。
+- Unicode Layer A 清理、AI_TRACE 证据绑定与机械命中逐项处置。
+- 网文基线、现实文学局部调制、反差笑点和方法蒸馏的可配置文风卡。
 - 生活化事件库：候选筛选、root event 调用、2-6 步链、状态后效、中止点和处置记录。
 - 离线形状检查与生活事件链验证器。
 
@@ -51,12 +55,21 @@ python scripts/validate_life_event_chain.py <event-chain.json>
 - `references/life-event-library.md`：事件卡和调用链规则。
 - `scripts/validate_life_event_chain.py`：事件链机械验证器。
 - `references/two-draft-workflow.md`：可选双稿工作流。
+- `references/cognitive-structure.md`、`references/scene-level-audit.md`：认知与场景层审计。
+- `references/split-chapter-seam.md`、`references/syntax-bounded-rephrase.md`：章节接缝和句式有界改写。
+- `references/ai-trace-audit.md`、`references/detector-evidence-and-reverse-effect.md`、`references/detector-mechanism-probes.md`：外部检测证据边界和机制探针。
+- `references/finding-disposition.md`、`references/structural-protection.md`：通用机械处置与结构保护。
+- `references/unicode-layer-a.md`：语义冻结后的 Layer A 清理。
+- `references/aigc-literary-dual-objective.md`、`references/method-layer-distilled-novel-toolbox.md`、`references/distilled-novel-toolbox-writing-methods.md`：双目标文风和方法蒸馏。
 
 ## 验证
 
 ```text
 python scripts/self_test.py
 python scripts/validate_life_event_chain.py --self-test
+python scripts/check_segment_semantic_boundaries.py --help
+python scripts/reconstruct_detector_aggregation.py --help
+python scripts/shadow_detector_scorer.py --help
 ```
 
 本 Skill 不调用外部模型，不保证绕过任何检测器，也不把审计提醒自动解释为事实或创作授权。
