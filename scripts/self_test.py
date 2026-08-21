@@ -65,6 +65,13 @@ def main() -> int:
             "PRIORITY_ORDER",
             "RETURN_INTERFACE",
         ),
+        "references/scene-level-audit.md": (
+            "SCENE_EVIDENCE",
+            "entry_state",
+            "visible_change",
+            "next_action_dependency",
+            "closure_level",
+        ),
     }
     project_markers = (
         "D:\\shipinzhizuo",
@@ -94,11 +101,13 @@ def main() -> int:
     checklist = (skill_root / "references/self-audit-checklist.md").read_text(encoding="utf-8")
     events = (skill_root / "references/life-event-library.md").read_text(encoding="utf-8")
     template = (skill_root / "assets/life-event-card.template.json").read_text(encoding="utf-8")
+    closure_template = (skill_root / "assets/narrative-closure-audit-v1.template.json").read_text(encoding="utf-8")
     for label, content, required in (
         ("structured-input-template.md", structured, ("NATURAL_PROSE_STRUCTURED_INPUT_V1", "WRITING_INPUT", "life_event_call")),
         ("self-audit-checklist.md", checklist, ("SELF_AUDIT_ONLY", "Pass A", "Pass B", "MECHANICAL_FINDINGS")),
         ("life-event-library.md", events, ("Call chain", "state_out", "REJECTED_OR_MERGED", "2—6")),
         ("life-event-card.template.json", template, ("LIFE_EVENT_CARD_V1", "chain_steps", "forbidden_outcomes")),
+        ("narrative-closure-audit-v1.template.json", closure_template, ("SCENE_EVIDENCE", "next_action_dependency", "counterfactual_items", "HARD_CAUSAL")),
     ):
         missing = [needle for needle in required if needle not in content]
         if missing:

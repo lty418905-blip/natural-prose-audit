@@ -29,4 +29,8 @@
 3. 能在单一连续窗口内语义等价修复时，执行最小改写并复跑。
 4. 不能安全修复时停止交付，而不是通过随机换词、标点扰动、错别字或无功能事件掩盖命中。
 
+### 叙事闭合证据
+
+叙事闭合不是“每个动作都解释原因”。对每场必须保存`entry_state`、`immediate_task`、`resistance`、`visible_change`、`exit_state`、`next_action_dependency`、`unresolved_or_unknown`和`closure_level`。对每个闭环风险必须保存精确位置、保留功能、拆松形式、拆松后的叙事损害和下一动作可理解性。缺少任一项只能标记`NOT_RELEASED`。
+
 机械检查器只报告形状；完整阅读决定文学取舍。单 agent 的两次读取不是独立审查证据。

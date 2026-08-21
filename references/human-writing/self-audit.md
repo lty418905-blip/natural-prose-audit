@@ -4,7 +4,7 @@ This checklist replaces subagent work in the generic Skill. It produces a discip
 
 ## Pass A: structure coverage
 
-Read the complete draft once without editing, then answer for every scene:
+Read the complete draft once without editing, then answer for every scene. Use the root `assets/narrative-closure-audit-v1.template.json`; prose locations and state changes are required evidence, not optional notes.
 
 - Does the scene have an entry state, an immediate task or desire, resistance, a visible change, and an exit state?
 - Are required actions, information, relationship shifts, and ending functions present?
@@ -12,6 +12,8 @@ Read the complete draft once without editing, then answer for every scene:
 - Does the scene preserve viewpoint and knowledge boundaries?
 - Is the next scene or ending interface supplied without explaining every cause?
 - Which items intentionally remain unknown, delayed, misread, or unresolved?
+
+For every scene, fill `entry_state`, `immediate_task`, `resistance`, `visible_change`, `exit_state`, `next_action_dependency`, `unresolved_or_unknown`, and `closure_level`. Do not replace these fields with “the scene is complete.”
 
 Record location, evidence, function, and disposition. Do not call this an independent coverage review.
 
@@ -25,6 +27,8 @@ Reread the draft from the reader's position, separately from Pass A. Check each 
 - uniform sentence rhythm, repeated reversal templates, abstract summary after concrete action, and voice flattening;
 - external interruption, ordinary friction, or residue that actually alters what happens next;
 - whether a retained mechanical finding has a real literary reason or should be revised.
+
+For every suspected closure loop, record the exact location, proposed loosened form, reader loss if loosened, next-action comprehensibility, and any fact, viewpoint, professional-accuracy, or knowledge-boundary harm. Record dialogue turns with agenda, knowledge scope, adjacent action, and post-turn state.
 
 For every finding choose exactly one: `FIX`, `KEEP_WITH_REASON`, `REVIEW_FLAG`, or `NOT_APPLICABLE`. `KEEP_WITH_REASON` is not a release exception; if a mechanical checker is in use, the final mechanical finding count must still be zero.
 

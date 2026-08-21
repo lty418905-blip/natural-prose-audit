@@ -7,6 +7,7 @@
 - 单 agent 先生成 `WRITING_INPUT`，再重新读取模板完成一次完整成稿。
 - 可选的同一 agent 双稿流程：第一稿、自审、第二份完整成稿、最终核验。
 - 结构覆盖与叙事闭合的两阶段自审清单，不伪装成独立子 agent 证据。
+- 逐场叙事闭合证据模板：状态、任务、阻力、可见变化、退出状态、下一动作依赖、未决项和反事实拆松记录。
 - 认知结构、场景级审计、章节接缝和语义等价句式有界改写。
 - AIGC 机制探针、提交剖面核验、分段边界检查、报告聚合复算和透明影子评分器。
 - Unicode Layer A 清理、AI_TRACE 证据绑定与机械命中逐项处置。
@@ -52,6 +53,7 @@ python scripts/validate_life_event_chain.py <event-chain.json>
 - `SKILL.md`：入口规则与模式选择。
 - `references/structured-input-template.md`：单 agent 结构化写作输入模板。
 - `references/self-audit-checklist.md`：结构覆盖与叙事闭合自审清单。
+- `assets/narrative-closure-audit-v1.template.json`：单 agent 逐场闭合证据与反事实模板。
 - `references/life-event-library.md`：事件卡和调用链规则。
 - `scripts/validate_life_event_chain.py`：事件链机械验证器。
 - `references/two-draft-workflow.md`：可选双稿工作流。

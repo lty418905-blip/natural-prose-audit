@@ -27,7 +27,7 @@ description: Audit, revise, or create Chinese fiction and nonfiction with a huma
 4. 初稿或原稿完整读完后，才读 [references/human-revision.md](references/human-revision.md) 做细审；不要用审稿表预先把声音磨平。
 5. `VOICE_STYLE`只记录可复用的中性参数；完整字段见 [references/voice-style-contract.md](references/voice-style-contract.md)。主导体裁／叙事引擎、具体容器、转折位置、退出牵引和幽默许可负责推进，叙述距离、情绪显露度、句法舒展或压缩、意象密度、对白显露或回避、留白等只作局部调制。文学调制不是比例配额、仿写指令或作者姓名替代品，不能覆盖事实、结构、人物视角或用户约束。
 6. 改稿触及事件、选择、场景顺序、因果、人物知识、关系、时间地点、专业语义、证据强度或结尾功能时，停止自然度清理，回到用户确认或事实／结构审查。
-7. 单 agent 不得把自己的两个阅读阶段伪称为独立审查。需要“双视角”时，先完成结构覆盖清单，再重新读取正文，按 [references/self-audit-checklist.md](references/self-audit-checklist.md) 完成叙事闭合清单，并明确标记 `SELF_AUDIT_ONLY`。
+7. 单 agent 不得把自己的两个阅读阶段伪称为独立审查。需要“双视角”时，先完成结构覆盖清单，再重新读取正文，按 [references/self-audit-checklist.md](references/self-audit-checklist.md) 和 [assets/narrative-closure-audit-v1.template.json](assets/narrative-closure-audit-v1.template.json) 完成逐场叙事闭合清单，并明确标记 `SELF_AUDIT_ONLY`。每场必须提交状态、动作后效、下一动作依赖和未决项的具体证据；抽象的“闭合充分”不能通过。
 
 ## 单 agent 结构化成稿
 
@@ -42,7 +42,7 @@ description: Audit, revise, or create Chinese fiction and nonfiction with a huma
 
 ## 审计与改稿
 
-先给每个场景或段落找眼下任务、动作、阻力、信息／关系变化和离场结果。再检查六类形状：安全而概括的词、长期同速的句法、模板过渡与重复解释、跨人物复用的作者词、统一润色造成的声线塌缩、所有场景被同一种精致声调覆盖。用上下文判断每个命中应 `KEEP`、`DELETE_TAIL`、`BOUNDED_REPHRASE` 还是 `REVIEW_FLAG`。
+先给每个场景或段落找眼下任务、动作、阻力、信息／关系变化和离场结果，并填出逐场`SCENE_EVIDENCE`。再检查六类形状：安全而概括的词、长期同速的句法、模板过渡与重复解释、跨人物复用的作者词、统一润色造成的声线塌缩、所有场景被同一种精致声调覆盖。用上下文判断每个命中应 `KEEP`、`DELETE_TAIL`、`BOUNDED_REPHRASE` 还是 `REVIEW_FLAG`。
 
 已有稿件的改写边界、冷读问题和格式差异，按相关参考文件执行。优先删动作后的重复解释、把抽象判断还原到人／物／动作／后果，保留合理的误解、改口、停顿和普通收尾。禁止随机同义替换、故意错字、病句、固定句长或感官配额。
 
