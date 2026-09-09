@@ -1,6 +1,6 @@
 ---
 name: natural-prose-audit
-description: Audit, revise, or create Chinese fiction and nonfiction with a human-readable voice while preserving facts, causality, viewpoint, and user constraints. Uses a single-agent structured-input workflow, with optional two-draft revision and life-event chain support; never claims detector evasion.
+description: Write, audit, and revise Chinese prose while preserving facts, causality, viewpoint, and voice. Supports structured single-agent drafts, optional two-draft revision, life-event chains, full literary and detector-evidence audits, and explicitly enabled independent production reviews. Never claims authorship proof or guaranteed detector evasion.
 ---
 
 # Natural Prose Audit
@@ -15,7 +15,9 @@ description: Audit, revise, or create Chinese fiction and nonfiction with a huma
 - **SINGLE_AGENT_TWO_DRAFT**：用户需要先写一稿、再根据闪光点与失败点重写一稿时，读取 [references/two-draft-workflow.md](references/two-draft-workflow.md) 及其结构化模板。
 - **EXPLAIN**：用户只问自然度、模型化形状或本 Skill 的边界时，只给方法说明，不虚构检测结论。
 
-若用户没有指定模式，创作／续写默认选择 `SINGLE_AGENT_STRUCTURED_DRAFT`；只有用户明确要求第二稿时才选择 `SINGLE_AGENT_TWO_DRAFT`。无论哪种模式，都不创建子智能体，不把本 Skill 变成外部模型调用器，也不把审计代理当作真实检测器。
+若用户没有指定模式，创作／续写默认选择 `SINGLE_AGENT_STRUCTURED_DRAFT`，只检查已有文字则选择 `AUDIT_ONLY`；只有用户明确要求第二稿时才选择 `SINGLE_AGENT_TWO_DRAFT`。以上默认模式不创建子智能体，不调用外部模型，也不把审计代理当作真实检测器。
+
+用户明确需要完整独立审查生产链时，可叠加 `CONTROLLED_PRODUCTION`，读取 [production-workflow.md](references/production-workflow.md)。该模式保留独立 A/B、四报告签名例外、补写验收、叙事量表和专业复查接口；不绑定特定项目、章号、作者模型或固定长度。独立上下文不可用时如实标记该模式未完成，不能降级自审后声称同等通过。下文的单 Agent、零命中和无签名通道约束描述默认模式；受控模式仍保留全部命中，只允许有实物证据的例外闭合，绝不将其报告为零命中。
 
 需要兼容旧版 `human-writing` 目录式调用时，可读取 `references/human-writing/` 下的同等通用参考副本；根目录参考文件是当前规范入口。
 
@@ -27,7 +29,7 @@ description: Audit, revise, or create Chinese fiction and nonfiction with a huma
 4. 初稿或原稿完整读完后，才读 [references/human-revision.md](references/human-revision.md) 做细审；不要用审稿表预先把声音磨平。
 5. `VOICE_STYLE`只记录可复用的中性参数；完整字段见 [references/voice-style-contract.md](references/voice-style-contract.md)。主导体裁／叙事引擎、具体容器、转折位置、退出牵引和幽默许可负责推进，叙述距离、情绪显露度、句法舒展或压缩、意象密度、对白显露或回避、留白等只作局部调制。文学调制不是比例配额、仿写指令或作者姓名替代品，不能覆盖事实、结构、人物视角或用户约束。
 6. 改稿触及事件、选择、场景顺序、因果、人物知识、关系、时间地点、专业语义、证据强度或结尾功能时，停止自然度清理，回到用户确认或事实／结构审查。
-7. 单 agent 不得把自己的两个阅读阶段伪称为独立审查。需要“双视角”时，先完成结构覆盖清单，再重新读取正文，按 [references/self-audit-checklist.md](references/self-audit-checklist.md) 和 [assets/narrative-closure-audit-v1.template.json](assets/narrative-closure-audit-v1.template.json) 完成逐场叙事闭合清单，并明确标记 `SELF_AUDIT_ONLY`。每场必须提交状态、动作后效、下一动作依赖和未决项的具体证据；抽象的“闭合充分”不能通过。
+7. 单 agent 不得把自己的两个阅读阶段伪称为独立审查。需要“双视角”时，先完成结构覆盖清单，再重新读取正文，按 [references/self-audit-checklist.md](references/self-audit-checklist.md) 和 [assets/self-narrative-closure-audit-v1.template.json](assets/self-narrative-closure-audit-v1.template.json) 完成逐场叙事闭合清单，并明确标记 `SELF_AUDIT_ONLY`。每场必须提交状态、动作后效、下一动作依赖和未决项的具体证据；抽象的“闭合充分”不能通过。
 
 ## 单 agent 结构化成稿
 
@@ -74,6 +76,17 @@ python scripts/audit_prose.py <稿件路径> --mode fiction
 需要了解来源、许可或与其他公开项目的关系时，读取 [references/source-notes.md](references/source-notes.md)。
 
 ## 增强审计模块
+
+完整审计、结构回退、分布式声线或全面改稿时，先读 [complete-audit-method.md](references/complete-audit-method.md)。它保留全部认知、场景、六维、回归与处置方法；其中角色生产要求仅在显式启用 `CONTROLLED_PRODUCTION` 后生效，普通模式保留文学方法但标为 `SELF_AUDIT_ONLY`。
+
+- 装配稿、有界修订、补写或锚点插入：读 [production-workflow.md](references/production-workflow.md)，运行 `scripts/post_assembly_text_hygiene.py`；补写后使用 `scripts/validate_post_expansion_literary_acceptance.py`。反复述、反同义复写、反连续骨架和逐段删除反事实必须成为补写输入。
+- 初稿完成后检查修饰语：读 [modifier-function-audit.md](references/modifier-function-audit.md)。删后不改变时空、动作、程度、因果、视角、声口或后效的装饰应删除；必要限定保留。
+- 完整正文：读 [narrative-architecture-human-band-rubric.md](references/narrative-architecture-human-band-rubric.md)，保留 QUD、情绪方式、主题过度决定、过度整改和五组观察。普通偏离仅提醒；只有五项极端条件全部满足才阻断，不能按人类特征配额打分。
+- 文风蒸馏候选进入调用卡：读 [controller-style-card-conversion.md](references/controller-style-card-conversion.md)，绑定来源并逐项 `ADOPTED / ADAPTED / REJECTED`；不指定模型品牌。
+- 独立生产审查：读 [project-dual-subagent-review-gate.md](references/project-dual-subagent-review-gate.md)、[project-finding-disposition.md](references/project-finding-disposition.md)、[project-structural-protection.md](references/project-structural-protection.md)。报告 A/B 同源但身份不同，场景证据与对白—动作握手均不可省略。
+- 跨章与整卷阅读：读 [continuous-reading.md](references/continuous-reading.md)，不能由单章 PASS 推断整体 PASS。
+
+通用模式与源能力逐项对应见 [capability-map.md](references/capability-map.md)。
 
 按任务需要渐进读取以下通用模块；它们不依赖特定项目、审查线程、调用器、角色或内部路径：
 

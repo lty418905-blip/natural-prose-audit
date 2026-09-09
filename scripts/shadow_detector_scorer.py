@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Transparent, offline shadow scorer for registered detector probe evidence.
+"""Transparent, offline shadow scorer for the 选定回归对象 detector probe evidence.
 
 This is an evidence-bound surrogate, not a reconstruction of a private detector.
 It never uploads text, parses PDFs, calls a model, or writes production prose.
@@ -252,6 +252,8 @@ def build_records(reports: dict[str, Any], texts: dict[str, dict[str, Any]]) -> 
         comparability = str(report.get("comparability", "UNKNOWN"))
         excluded = (
             "MISMATCH" in identity
+            or identity == "UNKNOWN"
+            or comparability == "UNKNOWN"
             or "MIXED_SOURCE" in comparability
             or "INVALID_INPUT_IDENTITY" in comparability
             or "CONFOUNDED_TWO_FACTOR" in comparability
@@ -260,7 +262,7 @@ def build_records(reports: dict[str, Any], texts: dict[str, dict[str, Any]]) -> 
             issues.append(f"{probe_id}: planned source len {source_length} != report chars {report['reported_chars']}")
         records.append({
             "probe_id": probe_id,
-            "group": probe_id.split("-", 1)[0],
+            "group": source.get("group", probe_id.split("-", 1)[0]),
             "text": text,
             "source": source,
             "features": feature_map,
@@ -276,12 +278,36 @@ def build_records(reports: dict[str, Any], texts: dict[str, dict[str, Any]]) -> 
     return records, issues
 
 
+def mapped_texts(path: Path) -> dict[str, dict[str, Any]]:
+    """Read exact probe files instead of reconstructing a specific probe pack."""
+    items = json.loads(path.read_text(encoding="utf-8-sig"))
+    texts = {}
+    for probe_id, item in items.items():
+        source = Path(item["path"])
+        if not source.is_absolute():
+            source = path.parent / source
+        digest = sha256_file(source)
+        if digest != item["sha256"].upper():
+            raise ValueError(f"{probe_id}: source sha256 mismatch")
+        texts[probe_id] = {
+            "text": source.read_bytes().decode("utf-8"),
+            "source_path": str(source.resolve()),
+            "source_sha256": digest,
+            "group": item["group"],
+            "prefix_kind": item.get("prefix_kind"),
+        }
+        if not isinstance(item["group"], str) or not item["group"].strip():
+            raise ValueError(f"{probe_id}: group required for held-out validation")
+    return texts
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--reports", type=Path, required=True)
-    parser.add_argument("--source-v1", type=Path, required=True)
-    parser.add_argument("--source-v2", type=Path, required=True)
-    parser.add_argument("--source-v3", type=Path, required=True)
+    parser.add_argument("--text-map", type=Path, help="probe ID to exact path, sha256 and group JSON")
+    parser.add_argument("--source-v1", type=Path)
+    parser.add_argument("--source-v2", type=Path)
+    parser.add_argument("--source-v3", type=Path)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--score-text", type=Path)
     parser.add_argument("--score-prefix-kind", choices=["title", "date", "author"])
@@ -289,13 +315,18 @@ def main() -> int:
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args()
 
-    for path in (args.reports, args.source_v1, args.source_v2, args.source_v3):
+    legacy = (args.source_v1, args.source_v2, args.source_v3)
+    if args.text_map and any(legacy):
+        parser.error("use --text-map or the three legacy source files, not both")
+    if not args.text_map and not all(legacy):
+        parser.error("provide --text-map or all three --source-v1/v2/v3 files")
+    for path in (args.reports, *((args.text_map,) if args.text_map else legacy)):
         if not path.is_file():
             print(json.dumps({"result": "BLOCKED", "reason": f"missing file: {path}"}, ensure_ascii=False, indent=2))
             return 2
 
     reports = json.loads(args.reports.read_text(encoding="utf-8-sig"))
-    texts = source_texts(args.source_v1, args.source_v2, args.source_v3)
+    texts = mapped_texts(args.text_map) if args.text_map else source_texts(*legacy)
     records, issues = build_records(reports, texts)
     eligible = [record for record in records if not record["excluded_from_fit"] and record["length_match"]]
     if len(eligible) < 6:
@@ -363,12 +394,19 @@ def main() -> int:
         "not_executed": ["PDF_OCR", "DETECTOR_CALL", "PRIVATE_ALGORITHM_INFERENCE", "PRODUCTION_PROSE_CHANGE"],
         "production_visible": False,
     }
+    cv = output["group_blocked_cv_metrics"]
+    baseline_cv = output["baseline_group_blocked_cv_metrics"]
+    if (not cv["count"] or cv["count"] != len(eligible)
+            or cv["mae"] >= baseline_cv["mae"]
+            or cv["rmse"] > baseline_cv["rmse"]):
+        output["result"] = "SHADOW_SURROGATE_INSUFFICIENT"
 
     if args.score_text:
         text = args.score_text.read_text(encoding="utf-8")
         fmap = features(text, args.score_prefix_kind)
         predicted = predict(model, fmap)
         output["arbitrary_text_score"] = {
+            "score_kind": "SHADOW_PREDICTED_SCORE",
             "path": str(args.score_text),
             "sha256": sha256_file(args.score_text),
             "chars": len(text),

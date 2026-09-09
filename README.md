@@ -30,7 +30,11 @@
 
 ## 机械放行
 
-凡采用机械检查器的工作，最终 `MECHANICAL_FINDINGS` 必须严格为 `0` 才能标记为放行。非零结果可以作为审计报告交付，但必须标记为 `NOT_RELEASED`。
+默认单 Agent 模式凡采用机械检查器，最终 `MECHANICAL_FINDINGS` 必须严格为 `0` 才能标记为放行。非零结果可以作为审计报告交付，但必须标记为 `NOT_RELEASED`。
+
+显式启用 `CONTROLLED_PRODUCTION` 时，保留完整独立 A/B、四报告签名例外和领域附加审查，见 [受控生产流程](references/production-workflow.md)。它不绑定特定项目、章节、固定模型或最低字数；没有真实独立上下文就不能声称完成。签名例外不是零命中，必须分别报告。
+
+完整功能对应见 [能力清单](references/capability-map.md)。新增装配去重／引号／旧词元扫描、补写后六项文学验收、修饰语功能审计、QUD／情绪／主题／过度整改量表及连续阅读流程；已有事件库、单 Agent 成稿和双稿均保留。
 
 该门不代表外部 AIGC 检测器已经通过，也不允许通过标题、空行、标点噪声、错别字或固定句长制造假象。外部检测报告只能作为有边界的证据，不能单独证明文本质量或检测器机制。
 
@@ -53,7 +57,8 @@ python scripts/validate_life_event_chain.py <event-chain.json>
 - `SKILL.md`：入口规则与模式选择。
 - `references/structured-input-template.md`：单 agent 结构化写作输入模板。
 - `references/self-audit-checklist.md`：结构覆盖与叙事闭合自审清单。
-- `assets/narrative-closure-audit-v1.template.json`：单 agent 逐场闭合证据与反事实模板。
+- `assets/self-narrative-closure-audit-v1.template.json`：单 agent 逐场闭合证据与反事实模板。
+- `assets/narrative-closure-audit-v1.template.json`：独立报告 B 完整模板，与 A 覆盖报告和汇合模板配套。
 - `references/life-event-library.md`：事件卡和调用链规则。
 - `scripts/validate_life_event_chain.py`：事件链机械验证器。
 - `references/two-draft-workflow.md`：可选双稿工作流。
@@ -68,10 +73,12 @@ python scripts/validate_life_event_chain.py <event-chain.json>
 
 ```text
 python scripts/self_test.py
+python scripts/self_test_published.py
+node scripts/self_test_review_gate.mjs
 python scripts/validate_life_event_chain.py --self-test
 python scripts/check_segment_semantic_boundaries.py --help
 python scripts/reconstruct_detector_aggregation.py --help
 python scripts/shadow_detector_scorer.py --help
 ```
 
-本 Skill 不调用外部模型，不保证绕过任何检测器，也不把审计提醒自动解释为事实或创作授权。
+本 Skill 不内置外部模型调用器，不保证绕过任何检测器，也不把审计提醒自动解释为事实或创作授权。Python 脚本使用 Python 3；影子评分器及完整自测另需 NumPy，支持以 `--text-map` 输入任意已绑定的探针文件，不依赖内部校准文章。独立审查机械门使用 Node.js 18+；没有用户明确的 `--minimum-cjk` 时不设长度下限。

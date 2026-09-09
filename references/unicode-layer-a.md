@@ -1,5 +1,6 @@
 # 保守 Unicode Layer A 文本卫生
 
+
 本步骤只处理UTF-8纯文本中高置信、没有正文语义的不可见控制字符。脚本`scripts/unicode_layer_a.py`是本Skill的原创实现，以MIT许可证发布；不复制来源不明的清理代码。
 
 ## 边界

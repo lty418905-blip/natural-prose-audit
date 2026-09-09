@@ -4,7 +4,7 @@ This checklist replaces subagent work in the generic Skill. It produces a discip
 
 ## Pass A: structure coverage
 
-Read the complete draft once without editing, then answer for every scene. Use [../assets/narrative-closure-audit-v1.template.json](../assets/narrative-closure-audit-v1.template.json); prose locations and state changes are required evidence, not optional notes.
+Read the complete draft once without editing, then answer for every scene. Use [../assets/self-narrative-closure-audit-v1.template.json](../assets/self-narrative-closure-audit-v1.template.json); prose locations and state changes are required evidence, not optional notes.
 
 - Does the scene have an entry state, an immediate task or desire, resistance, a visible change, and an exit state?
 - Are required actions, information, relationship shifts, and ending functions present?

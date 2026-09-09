@@ -1,0 +1,129 @@
+{
+  "schema": "NARRATIVE_ARCHITECTURE_HUMAN_BAND_RUBRIC_V1",
+  "object_id": "",
+  "outline": {
+    "path": "",
+    "sha256": ""
+  },
+  "prose": {
+    "path": "",
+    "sha256": "",
+    "profile": "UNTITLED_COMPLETE_PROSE"
+  },
+  "reviewer": {
+    "task_id": "",
+    "role": "NOVELIZATION_MAIN_AGENT",
+    "reviewed_at": ""
+  },
+  "workflow_position": "AFTER_FINAL_A_B_REPORTS_BEFORE_FINAL_PROSE_GATE_AND_DUAL_REVIEW",
+  "upstream_bindings": {
+    "post_assembly_hygiene": {
+      "required": true,
+      "path": "",
+      "sha256": "",
+      "result": "PASS"
+    },
+    "post_expansion_literary_acceptance": {
+      "required": false,
+      "path": "",
+      "sha256": "",
+      "result": "NOT_APPLICABLE"
+    },
+    "ai_trace_audit": {
+      "path": "",
+      "sha256": "",
+      "result": "PASS"
+    },
+    "mechanical_finding_disposition": {
+      "path": "",
+      "sha256": "",
+      "result": "PASS"
+    },
+    "outline_expression_coverage_report_a": {
+      "path": "",
+      "sha256": "",
+      "result": "PASS"
+    },
+    "narrative_closure_report_b": {
+      "path": "",
+      "sha256": "",
+      "result": "PASS"
+    }
+  },
+  "absorbed_checks": {
+    "qud_paragraph_chain": {
+      "status": "REFERENCE_PASS",
+      "paragraph_units": [],
+      "repeated_chain_shapes": [],
+      "linked_risk_groups": []
+    },
+    "emotion_mode_distribution": {
+      "status": "REFERENCE_PASS",
+      "emotion_beats": [],
+      "chapter_dominant_mode": "NONE",
+      "linked_risk_groups": []
+    },
+    "resolution_agency_and_thematic_overdetermination": {
+      "status": "REFERENCE_PASS",
+      "scene_and_ending_evidence": [],
+      "three_chapter_review_delegated_to": "PROJECT_STANDARD_43",
+      "linked_risk_groups": []
+    },
+    "humanizer_overcorrection": {
+      "status": "CLEAR",
+      "baseline_path": "",
+      "baseline_sha256": "",
+      "advisories": []
+    }
+  },
+  "groups": [
+    {
+      "group_id": "A_THEMATIC_OVERDETERMINATION",
+      "items": [],
+      "group_compatibility": "HUMAN_COMPATIBLE",
+      "evidence_windows": [],
+      "necessity_explanation": ""
+    },
+    {
+      "group_id": "B_SENSORY_EMBODIED_PERFORMATIVITY",
+      "items": [],
+      "group_compatibility": "HUMAN_COMPATIBLE",
+      "evidence_windows": [],
+      "necessity_explanation": ""
+    },
+    {
+      "group_id": "C_STRUCTURAL_STREAMLINING",
+      "items": [],
+      "group_compatibility": "HUMAN_COMPATIBLE",
+      "evidence_windows": [],
+      "necessity_explanation": ""
+    },
+    {
+      "group_id": "D_OPTIONAL_HUMAN_POSITIVE_MARKERS",
+      "items": [],
+      "group_compatibility": "HUMAN_COMPATIBLE",
+      "evidence_windows": [],
+      "necessity_explanation": "ABSENCE_IS_NOT_A_DEFECT"
+    },
+    {
+      "group_id": "E_TEMPORAL_SPATIAL_DISCOURSE_DIVERSITY",
+      "items": [],
+      "group_compatibility": "HUMAN_COMPATIBLE",
+      "evidence_windows": [],
+      "necessity_explanation": ""
+    }
+  ],
+  "extreme_deviation_test": {
+    "two_or_more_independent_unexplained_groups": false,
+    "three_separate_scene_or_position_windows": false,
+    "chapter_reading_experience_dominated": false,
+    "not_required_by_outline_genre_viewpoint_science_or_world": false,
+    "material_literary_harm_evidenced": false,
+    "qualifies_as_extreme": false
+  },
+  "overcorrection_advisories": [],
+  "result": "REFERENCE_PASS",
+  "blocking": false,
+  "next_action": "CONTINUE_EXISTING_PROJECT_GATES",
+  "source_changed_after_report": false
+}

@@ -1,5 +1,7 @@
 # 检测报告证据与反向效果处理
 
+适用范围：文学与证据方法可用于任何任务；文中“项目”“受控生产”“协调者”“正文负责人”和独立报告要求仅指显式启用的 CONTROLLED_PRODUCTION。普通单 Agent 模式保持 SELF_AUDIT_ONLY 与零命中放行，不伪造独立报告或签名。模式与完整执行顺序见 [production-workflow.md](production-workflow.md)。
+
 检测报告仍先在独立文学冷读之后读取，但在 `AIGC_LITERARY_DUAL` 模式下，报告是与文学审计并列的改稿证据。先写出主病灶、保护声口和范围，再查看报告是否提供可比、可复现的检测机制线索；禁止让检测器逐句替作者清洗，允许它参与连续机制区域和版本选择。
 
 ## 一、先固定检测对象
@@ -55,7 +57,7 @@
 - `SUBMISSION_SEGMENT_BYTE_RANGE`：基于已绑定提交文本SHA的UTF-8字节偏移。
 - `SOURCE_SEGMENT_BYTE_RANGE`：映射回已绑定源稿SHA的UTF-8字节偏移；转换未知时写`NOT_AVAILABLE`。
 - `SEGMENT_BOUNDARY_CLASS`：`DOCUMENT_EDGE|PARAGRAPH_OR_LINE_BOUNDARY|SENTENCE_WITHIN_PARAGRAPH_FLAG|MID_SENTENCE_FLAG|MID_DIALOGUE_FLAG`；段内句末和对白中截断都必须复核。
-- `AUTHOR_ROUND_ALIGNMENT`：分段是否与Gemini、Opus、Fable、受控融合或人工校正的既有轮次边界重合；只能写可由生产证据确认的身份。
+- `AUTHOR_ROUND_ALIGNMENT`：分段是否与初稿、终稿、受控融合或人工校正的既有轮次边界重合；只能写可由生产证据确认的身份。
 - `INDEPENDENT_FINDING_OVERLAP`：盲态主病灶与检测高风险段是`PASS / PARTIAL / FAIL / UNRESOLVED`。
 - `LOCKED_LOW_RISK_REGION`：低风险段是否存在独立文学硬伤；若没有，默认不重写，只允许为接缝所必需的一处最小承接修正。
 
@@ -121,7 +123,7 @@ python scripts/audit_prose.py <候选> --mode fiction --structure --baseline <�
 - `...=UNCHANGED`：审计后选择保留正文。
 - `...=PRIMARY_FINDING_UNRESOLVED`：主病灶需要作者级处理或证据不足。
 
-版本名和交接摘要必须与该结论一致。专业／settingPASS只证明各自职责范围，不得作为自然度改善证据。
+版本名和交接摘要必须与该结论一致。领域／连续性PASS只证明各自职责范围，不得作为自然度改善证据。
 
 ## 六、最小记录模板
 
@@ -151,4 +153,3 @@ LOCKED_LOW_RISK_REGION=<path/range/sha or NONE>
 NATURALNESS_EDITORIAL_OUTCOME=<enum>
 UNKNOWN_CAUSES=<explicit unknowns>
 ```
-

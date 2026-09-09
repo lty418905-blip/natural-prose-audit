@@ -1,41 +1,77 @@
 {
-  "schema": "NARRATIVE_CLOSURE_SELF_AUDIT_V1",
-  "mode": "SELF_AUDIT_ONLY",
-  "evidence_contract": "SCENE_EVIDENCE",
-  "allowed_closure_levels": ["HARD_CAUSAL", "SOFT_FUNCTIONAL", "OPEN_RESIDUE"],
-  "prose": {"path": "", "sha256": ""},
+  "schema_version": "NARRATIVE_LOGIC_CLOSURE_AUDIT_V1",
+  "audit_id": "{{AUDIT_ID}}",
+  "object_id": "{{OBJECT_ID}}",
+  "chapter_number": "{{CHAPTER_NUMBER}}",
+  "report_scope": "FULL_PROSE_BY_SCENE",
   "detector_materials_read": false,
-  "scenes": [{
-    "scene_id": "S1",
-    "prose_location": "",
+  "outline": {"path": "{{OUTLINE_PATH}}", "sha256": "{{OUTLINE_SHA256}}"},
+  "prose": {"path": "{{PROSE_PATH}}", "sha256": "{{PROSE_SHA256}}"},
+  "auditor": {
+    "kind": "INDEPENDENT_SUBAGENT",
+    "independence": "INDEPENDENT_CONTEXT",
+    "execution_mode": "PARALLEL_INDEPENDENT",
+    "peer_report_read": false,
+    "task_id": "{{NARRATIVE_CLOSURE_TASK_ID}}",
+    "context_id": "{{NARRATIVE_CLOSURE_CONTEXT_ID}}",
+    "one_time": true,
+    "closed": true
+  },
+  "result": "PASS",
+  "scene_ids": ["{{SCENE_ID}}"],
+  "audited_scene_ids": ["{{SCENE_ID}}"],
+  "dimensions_checked": [
+    "ACTION_REASON_OVEREXPLANATION",
+    "OBSERVATION_INFERENCE_CONCLUSION",
+    "DIALOGUE_QUESTION_ANSWER_CLOSURE",
+    "SELF_CORRECTION_TO_RIGHT_ANSWER",
+    "UNKNOWN_ENUMERATION_AND_FUTURE_PLAN",
+    "SETUP_PAYOFF_SUMMARY_UNIFORMITY",
+    "EXTERNAL_INTERRUPTION_AND_RESIDUE"
+  ],
+  "scene_matrix": [{
+    "scene_id": "{{SCENE_ID}}",
+    "prose_location": "{{PROSE_LOCATION}}",
     "scene_evidence": {
-      "entry_state": "",
-      "immediate_task": "",
-      "resistance": "",
-      "visible_change": "",
-      "exit_state": "",
-      "next_action_dependency": "",
-      "unresolved_or_unknown": "NONE",
+      "entry_state": "{{ENTRY_STATE}}",
+      "immediate_task": "{{IMMEDIATE_TASK}}",
+      "resistance": "{{RESISTANCE}}",
+      "visible_change": "{{VISIBLE_CHANGE}}",
+      "exit_state": "{{EXIT_STATE}}",
+      "next_action_dependency": "{{NEXT_ACTION_DEPENDENCY}}",
+      "unresolved_or_unknown": "{{UNRESOLVED_OR_UNKNOWN}}",
       "closure_level": "SOFT_FUNCTIONAL"
     },
-    "dialogue_action_handshake": {
-      "dialogue_present": false,
-      "no_dialogue_reason": "",
-      "turns": []
-    },
+    "science_scope": "NON_SCIENCE",
+    "risk_status": "CLEAR",
+    "dimensions_checked": [
+      "ACTION_REASON_OVEREXPLANATION",
+      "OBSERVATION_INFERENCE_CONCLUSION",
+      "DIALOGUE_QUESTION_ANSWER_CLOSURE",
+      "SELF_CORRECTION_TO_RIGHT_ANSWER",
+      "UNKNOWN_ENUMERATION_AND_FUTURE_PLAN",
+      "SETUP_PAYOFF_SUMMARY_UNIFORMITY",
+      "EXTERNAL_INTERRUPTION_AND_RESIDUE"
+    ],
     "dimension_evidence": {
-      "ACTION_REASON_OVEREXPLANATION": "",
-      "OBSERVATION_INFERENCE_CONCLUSION": "",
-      "DIALOGUE_QUESTION_ANSWER_CLOSURE": "",
-      "SELF_CORRECTION_TO_RIGHT_ANSWER": "",
-      "UNKNOWN_ENUMERATION_AND_FUTURE_PLAN": "",
-      "SETUP_PAYOFF_SUMMARY_UNIFORMITY": "",
-      "EXTERNAL_INTERRUPTION_AND_RESIDUE": ""
+      "ACTION_REASON_OVEREXPLANATION": "{{EVIDENCE}}",
+      "OBSERVATION_INFERENCE_CONCLUSION": "{{EVIDENCE}}",
+      "DIALOGUE_QUESTION_ANSWER_CLOSURE": "{{EVIDENCE}}",
+      "SELF_CORRECTION_TO_RIGHT_ANSWER": "{{EVIDENCE}}",
+      "UNKNOWN_ENUMERATION_AND_FUTURE_PLAN": "{{EVIDENCE}}",
+      "SETUP_PAYOFF_SUMMARY_UNIFORMITY": "{{EVIDENCE}}",
+      "EXTERNAL_INTERRUPTION_AND_RESIDUE": "{{EVIDENCE}}"
     },
+    "dialogue_action_handshake": {
+      "status": "PASS",
+      "dialogue_present": false,
+      "no_dialogue_reason": "{{NO_DIALOGUE_REASON}}",
+      "turns": [],
+      "unresolved_turn_count": 0
+    },
+    "evidence": "{{SCENE_EVIDENCE_SUMMARY}}",
     "counterfactual_items": [],
-    "risk_status": "CLEAR"
+    "mechanical_finding_ids_in_scope": []
   }],
-  "mechanical_findings": [],
-  "closure_result": "PENDING",
-  "release_status": "NOT_RELEASED"
+  "unresolved_non_science_count": 0
 }

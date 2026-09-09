@@ -1,0 +1,41 @@
+{
+  "schema": "NARRATIVE_CLOSURE_SELF_AUDIT_V1",
+  "mode": "SELF_AUDIT_ONLY",
+  "evidence_contract": "SCENE_EVIDENCE",
+  "allowed_closure_levels": ["HARD_CAUSAL", "SOFT_FUNCTIONAL", "OPEN_RESIDUE"],
+  "prose": {"path": "", "sha256": ""},
+  "detector_materials_read": false,
+  "scenes": [{
+    "scene_id": "S1",
+    "prose_location": "",
+    "scene_evidence": {
+      "entry_state": "",
+      "immediate_task": "",
+      "resistance": "",
+      "visible_change": "",
+      "exit_state": "",
+      "next_action_dependency": "",
+      "unresolved_or_unknown": "NONE",
+      "closure_level": "SOFT_FUNCTIONAL"
+    },
+    "dialogue_action_handshake": {
+      "dialogue_present": false,
+      "no_dialogue_reason": "",
+      "turns": []
+    },
+    "dimension_evidence": {
+      "ACTION_REASON_OVEREXPLANATION": "",
+      "OBSERVATION_INFERENCE_CONCLUSION": "",
+      "DIALOGUE_QUESTION_ANSWER_CLOSURE": "",
+      "SELF_CORRECTION_TO_RIGHT_ANSWER": "",
+      "UNKNOWN_ENUMERATION_AND_FUTURE_PLAN": "",
+      "SETUP_PAYOFF_SUMMARY_UNIFORMITY": "",
+      "EXTERNAL_INTERRUPTION_AND_RESIDUE": ""
+    },
+    "counterfactual_items": [],
+    "risk_status": "CLEAR"
+  }],
+  "mechanical_findings": [],
+  "closure_result": "PENDING",
+  "release_status": "NOT_RELEASED"
+}

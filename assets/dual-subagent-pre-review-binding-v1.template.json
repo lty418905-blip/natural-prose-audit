@@ -1,0 +1,32 @@
+{
+  "schema": "dual_subagent_pre_review_binding_v1",
+  "object_id": "{{OBJECT_ID}}",
+  "outline_sha256": "{{OUTLINE_SHA256}}",
+  "prose_sha256": "{{PROSE_SHA256}}",
+  "outline_expression_coverage_report": {
+    "path": "{{REPORT_A_PATH}}",
+    "sha256": "{{REPORT_A_SHA256}}",
+    "task_id": "{{OUTLINE_COVERAGE_TASK_ID}}",
+    "context_id": "{{OUTLINE_COVERAGE_CONTEXT_ID}}",
+    "coverage_result": "PENDING"
+  },
+  "narrative_closure_report": {
+    "path": "{{REPORT_B_PATH}}",
+    "sha256": "{{REPORT_B_SHA256}}",
+    "task_id": "{{NARRATIVE_CLOSURE_TASK_ID}}",
+    "context_id": "{{NARRATIVE_CLOSURE_CONTEXT_ID}}",
+    "closure_result": "PENDING"
+  },
+  "independence_checks": {
+    "parallel_independent": false,
+    "different_task_ids": false,
+    "different_context_ids": false,
+    "both_peer_report_read_false": false,
+    "same_outline_identity": false,
+    "same_prose_identity": false,
+    "both_one_time_and_closed": false
+  },
+  "narrative_closure_dispositions": [],
+  "source_changed_after_reports": false,
+  "send_review_gate": "PENDING"
+}

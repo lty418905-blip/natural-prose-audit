@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
+import json
 import re
 import sys
 from dataclasses import dataclass
@@ -385,10 +387,80 @@ def read_text(path: str) -> str:
     return Path(path).read_text(encoding="utf-8")
 
 
+def issue_kind(message: str) -> str:
+    prefixes = (
+        ("硬停词", "hard_stop"),
+        ("黑话", "hard_jargon"),
+        ("中文冒号", "punctuation_colon"),
+        ("英文冒号", "punctuation_colon"),
+        ("破折号", "punctuation_dash"),
+        ("连接号式破折号", "punctuation_dash"),
+        ("模型路标", "model_road_sign"),
+        ("禁用翻案句", "pivot_template"),
+        ("疑似翻案腔变形", "semantic_pivot"),
+        ("三连以上同构排比", "anaphora_run"),
+        ("名词化句式", "nominalization"),
+        ("连词密度偏高", "conjunction_density"),
+        ("洞察路标", "insight_marker_density"),
+        ("长前置成分", "left_branch_density"),
+        ("段落开场重复", "repeated_paragraph_opener"),
+    )
+    normalized = message.removeprefix("house-style提醒：")
+    for prefix, kind in prefixes:
+        if normalized.startswith(prefix):
+            return kind
+    return "house_style_shape"
+
+
+def structured_issues(failures: list[str], warnings: list[str]) -> list[dict]:
+    issues: list[dict] = []
+    occurrences: collections.Counter[str] = collections.Counter()
+    for severity, messages in (("failure", failures), ("warning", warnings)):
+        for message in messages:
+            payload = {"severity": severity, "type": issue_kind(message), "message": message}
+            canonical = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            digest = hashlib.sha256(canonical).hexdigest().upper()[:16]
+            occurrences[digest] += 1
+            line_match = re.search(r"第\s*(\d+)\s*行", message)
+            issue = {
+                **payload,
+                "finding_id": f"NPH-{digest}-{occurrences[digest]:02d}",
+                "project_disposition_class": "REPAIR_REQUIRED",
+                "project_allowed_dispositions": ["FIXED", "CONTROLLER_EXCEPTION_APPROVED"],
+            }
+            if line_match:
+                issue["line"] = int(line_match.group(1))
+            issues.append(issue)
+    return issues
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="检查中文成稿的硬禁令与模型化形状")
     parser.add_argument("path", help="Markdown 或文本文件路径。使用 - 从标准输入读取")
+    parser.add_argument(
+        "--strict-house-style",
+        action="store_true",
+        help=(
+            "将可解释的 house-style 规则（冒号、破折号、模板路标、翻案句）"
+            "作为硬失败；默认仅报告提醒"
+        ),
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="输出带稳定finding_id的结构化结果；项目逐项处置门使用此模式",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        help="将JSON结果写入一个尚不存在的UTF-8文件；仅可与--json一起使用",
+    )
     args = parser.parse_args()
+
+    if args.output and not args.json:
+        parser.error("--output requires --json")
+    if args.output and args.output.exists():
+        parser.error(f"output already exists: {args.output}")
 
     try:
         text = read_text(args.path)
@@ -405,6 +477,13 @@ def main() -> int:
     failures = []
     warnings = []
 
+    def add_style_issue(message: str) -> None:
+        """Keep contextual house-style rules non-blocking unless explicitly requested."""
+        if args.strict_house_style:
+            failures.append(message)
+        else:
+            warnings.append(f"house-style提醒：{message} 默认不阻断；请结合声线与语境判断。")
+
     quote_colons = []
     for symbol, label in FORBIDDEN_PUNCTUATION.items():
         matches = list(re.finditer(re.escape(symbol), prose))
@@ -419,7 +498,7 @@ def main() -> int:
             matches = hard
         if matches:
             lines = "、".join(str(line_number(text, match.start())) for match in matches[:8])
-            failures.append(f"{label}共 {len(matches)} 处，出现在第 {lines} 行。")
+            add_style_issue(f"{label}共 {len(matches)} 处，出现在第 {lines} 行。")
     if quote_colons:
         lines = "、".join(
             str(line_number(text, match.start())) for match in quote_colons[:8]
@@ -465,14 +544,14 @@ def main() -> int:
 
     road_signs = all_matches(prose, ROAD_SIGN_PATTERNS)
     for match in road_signs:
-        failures.append(
+        add_style_issue(
             f"模型路标，第 {line_number(text, match.start())} 行，"
             f"“{excerpt(match.group().lstrip(ROAD_STRIP_CHARS))}”"
         )
 
     pivots = all_matches(prose, PIVOT_PATTERNS)
     for match in pivots:
-        failures.append(
+        add_style_issue(
             f"禁用翻案句，第 {line_number(text, match.start())} 行，"
             f"“{excerpt(match.group())}”"
         )
@@ -608,6 +687,28 @@ def main() -> int:
             f"八百字内出现 {len(fields)} 套借喻。{'、'.join(sorted(fields))}。"
             f"例词有 {samples}。"
         )
+
+    if args.json:
+        issues = structured_issues(failures, warnings)
+        payload = {
+            "schema": "natural_prose_house_style_audit_v1",
+            "source": str(Path(args.path).resolve()) if args.path != "-" else "STDIN",
+            "strict_house_style": args.strict_house_style,
+            "han_count": total_han,
+            "finding_count": len(issues),
+            "findings": issues,
+            "result": "PASS" if not issues else "FINDINGS_PRESENT",
+            "note": (
+                "Findings are shape evidence, not authorship or detector claims. "
+                "CONTROLLED_PRODUCTION requires FIXED or a controller-approved exception for every finding."
+            ),
+        }
+        rendered = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+        if args.output:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(rendered, encoding="utf-8", newline="\n")
+        print(rendered, end="")
+        return 1 if failures else 0
 
     print(f"汉字数 {total_han}")
     print(

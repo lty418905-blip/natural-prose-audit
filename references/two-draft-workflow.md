@@ -1,5 +1,6 @@
 # 同一 agent 双稿工作流
 
+
 本流程适用于用户明确需要“先出一稿，再根据自审重写一稿”的中文虚构或非虚构任务。它是一个单 agent 的串行工作流：同一个活动 agent 负责冻结约束、完成第一稿、完整阅读并结构化审计、构造第二份输入包、完成第二稿和最终核验。不得创建子智能体，不得把另一个模型的意见伪装成独立审稿，也不依赖特定项目的调用器、注册表或门禁。
 
 ## 阶段 0：冻结写作合同
@@ -53,6 +54,12 @@ voice_style:
       source_language: ""
       translation_status: "ORIGINAL | TRANSLATED | UNKNOWN"
       adoption_status: "REFERENCE_ONLY | SELECTED | REJECTED | UNKNOWN"
+  PROCESS_GUARDS:
+    explanation_policy: "ALLOW_WHEN_CAUSALITY_REQUIRES / REVIEW_REPEATED_TAILS"
+    dialogue_completion_policy: "ALLOW_PARTIAL_EVASIVE_INTERRUPTED_RESPONSES"
+    seam_policy: "CONTINUE_WITHOUT_RESET_OR_RECAP"
+    cross_character_voice_protection: []
+    detector_material_in_generation_prompt: false
   PRIORITY_ORDER:
     - FACTS_AND_USER_CONSTRAINTS
     - VIEWPOINT_AND_PSYCHOLOGY_BOUNDARY
@@ -110,12 +117,13 @@ output_contract:             # 只交第二稿时的标题、标记、引用等�
 
 同时登记：
 
+- `PRIMARY_FINDING`：第一稿最主要的结构、声线或自然度问题，绑定稿件 SHA、范围、保护项和处理权限；没有主病灶时写 `NONE_WITH_REASON`，不能留空。
 - `FACT_DRIFT_CHECK`：第一稿是否新增、遗漏或改变了事实、来源归属、人物知识、时间、因果或设定。
 - `STRUCTURE_CHECK`：每场／每段是否带来动作、信息、关系、风险、判断或理解变化；结尾是否留下合同要求的结果。
 - `VOICE_CHECK`：哪些声音差异属于人物／作者位置，哪些只是统一润色造成的表面差异。
 - `UNRESOLVED`：证据不足或需要用户决定的项目，不得借重写擅自解决。
 
-脚本命中只是一项证据。不要按命中数量排序，也不要把 `WARNING` 自动升级为失败。审计完成后，停止继续反复全文推演；第二稿只处理已记录且有理由的问题。
+脚本命中只是一项证据。不要按命中数量排序，也不要把 `WARNING` 自动升级为失败。检测相关任务还须按 [ai-trace-audit.md](ai-trace-audit.md) 先锁定冷读记录；检测分数、阈值和高风险词不得进入第二份写作输入。审计完成后，停止继续反复全文推演；第二稿只处理已记录且有理由的问题。
 
 ## 阶段 3：构造独立的第二份输入包
 
@@ -133,6 +141,8 @@ output_contract:             # 只交第二稿时的标题、标记、引用等�
 3. `REQUIRED_REPAIRS`：失败点、证据位置、影响、修复动作和优先级。
 4. `REGRESSION_GUARDS`：不得改变的事实、事件顺序、人物知识、关系、视角、引用归属、格式和结尾接口。
 5. `OUTPUT_CONTRACT`：第二稿必须完整、自洽、可直接交付；不要输出过程说明、补丁标记或审计标签。
+
+`REQUIRED_REPAIRS`必须说明它与 `PRIMARY_FINDING` 的关系。局部修复没有命中主病灶时，不得在第二稿核验中写成主病灶已解决；主病灶属于跨场景声线或整体结构时，优先使用 `REAUTHOR_WITHOUT_DRAFT_1`，避免机械继承第一稿段落骨架和解释节拍。
 
 第二份提示词可以在内部写成结构化 YAML/JSON，也可以用 Markdown 的同等字段表达。关键是字段完整、来源边界明确、修复决策可追溯；不要为了格式本身增加无关元数据。
 

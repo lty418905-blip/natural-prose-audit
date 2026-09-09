@@ -1,0 +1,24 @@
+{
+  "schema": "POST_EXPANSION_LITERARY_ACCEPTANCE_V1",
+  "object_id": "",
+  "pre_expansion_prose": {"path": "", "sha256": ""},
+  "post_expansion_prose": {"path": "", "sha256": ""},
+  "outline": {"path": "", "sha256": ""},
+  "expansion_plan": {"path": "", "sha256": ""},
+  "fragments": [{
+    "path": "", "sha256": "", "left_anchor": "", "right_anchor": "",
+    "added_utf8_range": {"start": 0, "end": 0},
+    "function_lost_if_removed": "",
+    "checks": {
+      "FUNCTION_LOST_IF_REMOVED": "PENDING",
+      "NOVEL_INFORMATION_OR_STATE_CHANGE": "PENDING",
+      "OBJECT_AND_SENSORY_RECURRENCE": "PENDING",
+      "VOICE_AND_SEAM_FIT": "PENDING",
+      "OUTLINE_AND_FACT_BOUNDARY": "PENDING",
+      "PLAN_CLOSURE": "PENDING"
+    }
+  }],
+  "whole_chapter_counterfactual": {"result": "PENDING", "evidence": ""},
+  "reviewer_identity": "",
+  "result": "PENDING"
+}

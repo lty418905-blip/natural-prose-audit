@@ -1,0 +1,31 @@
+{
+  "schema": "outline_expression_coverage_audit_v2",
+  "report_type": "OUTLINE_EXPRESSION_COVERAGE",
+  "audit_id": "{{AUDIT_ID}}",
+  "object_id": "{{OBJECT_ID}}",
+  "outline": {
+    "path": "{{OUTLINE_PATH}}",
+    "sha256": "{{OUTLINE_SHA256}}"
+  },
+  "prose": {
+    "path": "{{PROSE_PATH}}",
+    "sha256": "{{PROSE_SHA256}}"
+  },
+  "task_id": "{{OUTLINE_COVERAGE_TASK_ID}}",
+  "context_id": "{{OUTLINE_COVERAGE_CONTEXT_ID}}",
+  "one_time": true,
+  "closed": false,
+  "independence": {
+    "execution_mode": "PARALLEL_INDEPENDENT",
+    "peer_report_type": "NARRATIVE_CLOSURE",
+    "peer_report_read": false,
+    "peer_report_path": null,
+    "peer_report_sha256": null,
+    "same_source_allowlist_as_peer": true
+  },
+  "scene_coverage": [{"item_id": "{{ITEM_ID}}", "status": "PENDING", "prose_location": "{{LOCATION}}", "evidence": "{{EVIDENCE}}"}],
+  "outline_change_required": false,
+  "blocked_scope": [],
+  "narrative_closure_review_delegated_to": "REPORT_B",
+  "coverage_result": "PENDING"
+}

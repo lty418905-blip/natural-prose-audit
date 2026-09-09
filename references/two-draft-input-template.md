@@ -1,5 +1,6 @@
 # DRAFT_2_INPUT 模板
 
+
 这是给同一活动 agent 的第二份完整输入包。删除不适用的示例值，但不要删除字段；未知写 `UNKNOWN`，不适用写 `NOT_APPLICABLE`。模板只规定信息结构，不要求把字段名称写进最终正文。
 
 ```yaml
@@ -66,6 +67,12 @@ voice_style:
       source_language: ""
       translation_status: "ORIGINAL | TRANSLATED | UNKNOWN"
       adoption_status: "REFERENCE_ONLY | SELECTED | REJECTED | UNKNOWN"
+  PROCESS_GUARDS:
+    explanation_policy: "ALLOW_WHEN_CAUSALITY_REQUIRES / REVIEW_REPEATED_TAILS"
+    dialogue_completion_policy: "ALLOW_PARTIAL_EVASIVE_INTERRUPTED_RESPONSES"
+    seam_policy: "CONTINUE_WITHOUT_RESET_OR_RECAP"
+    cross_character_voice_protection: []
+    detector_material_in_generation_prompt: false
   PRIORITY_ORDER:
     - FACTS_AND_USER_CONSTRAINTS
     - VIEWPOINT_AND_PSYCHOLOGY_BOUNDARY
@@ -83,6 +90,16 @@ keep_functions:
     preserve_action: "KEEP | TRANSFER_FUNCTION | REBUILD_IF_NEEDED"
     risk_if_lost: []
 
+primary_finding:
+  id: "PF-01 | NONE_WITH_REASON"
+  source_sha256: ""
+  class: "STRUCTURE | DISTRIBUTED_VOICE | RHYTHM | EXPLANATION | SEAM | OTHER"
+  scope: "LOCAL | MULTI_SCENE | WHOLE_TEXT"
+  evidence_ranges: []
+  voice_protection: []
+  authorized_action: "AUDIT_ONLY | BOUNDED_REVISION | REAUTHOR_WITHOUT_DRAFT_1"
+  detector_independent_reason: ""
+
 required_repairs:
   - id: F-01
     location: ""
@@ -98,6 +115,7 @@ regression_guards:
   - "不得改变人物视角、时间顺序、因果、关系阶段或用户指定结构"
   - "不得把文学调制变成频率、句长、段长或意象配额"
   - "不得在正文中出现审计术语、检测分数或过程说明"
+  - "不得把检测器名称、阈值、分段分值、规避假说或目标百分比传入第二稿"
 
 draft_1_source:
   available: "true | false"
@@ -105,7 +123,7 @@ draft_1_source:
   use_mode: "READ_AS_MATERIAL | DO_NOT_READ_FULL_TEXT"
 
 output_instructions: |
-  写出从开头到结尾的一份完整第二稿。保留 keep_functions 的有效功能，逐项处理 required_repairs，遵守 regression_guards。
+  写出从开头到结尾的一份完整第二稿。保留 keep_functions 的有效功能，逐项处理与 primary_finding 有明确关系的 required_repairs，遵守 regression_guards。
   只输出正文及 output_contract 要求的格式；不要输出补丁、差异、审计解释或“其余同上”。
 ```
 
